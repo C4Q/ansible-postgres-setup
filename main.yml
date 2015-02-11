@@ -1,0 +1,7 @@
+---
+
+- hosts: db_server
+  remote_user: root
+  roles:
+    - common
+    - postgres

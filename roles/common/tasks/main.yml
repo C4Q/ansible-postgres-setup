@@ -1,0 +1,62 @@
+---
+
+# Create admin user
+- name: ensure admin group is created
+  group: name={{ admin_username }} state=present
+
+- name: ensure admin user is created
+  user: name={{ admin_username }} group={{ admin_username }}
+
+# Sudoers
+- name: put sudoers file in place
+  template: src=sudoers dest=/etc/sudoers validate='visudo -cf %s'
+
+- name: Put admin public key in authorized_keys file
+  authorized_key: user={{ admin_username }} key="{{ ssh_public_key }}"
+
+- name: put sshd config file in place
+  template: src=sshd_config  dest=/etc/ssh/sshd_config owner=root group=root
+  notify:
+    - restart ssh
+
+# Create swap file.
+- name: create swapfile
+  command: fallocate -l 1G /swapfile creates=/swapfile
+  sudo: yes
+  remote_user: admin
+  tags: swap
+
+- name: chmod on swapfile to 600
+  file: mode=600 owner=root group=root path=/swapfile
+  sudo: yes
+  remote_user: admin
+  tags: swap
+
+- name: run mkswap on swapfile
+  command: mkswap /swapfile
+  sudo: yes
+  remote_user: admin
+  tags: swap
+
+- name: run swapon on swapfile
+  command: swapon /swapfile
+  sudo: yes
+  remote_user: admin
+  tags: swap
+
+- name: set cache_pressure to 50
+  sysctl: name=vm.vfs_cache_pressure value=50 state=present
+  sudo: yes
+  remote_user: admin
+  tags: swap
+
+- name: save cache_pressure in sysctl.conf
+  sudo: yes
+  remote_user: admin
+  shell: echo 'vm.vfs_cache_pressure = 50' >> /etc/sysctl.conf
+  tags: swap
+
+- name: add swapfile to fstab
+  sudo: yes
+  shell: echo '/swapfile   none    swap    defaults    0   0' >> /etc/fstab
+  tags: swap

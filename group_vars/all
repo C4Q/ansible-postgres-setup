@@ -1,0 +1,4 @@
+---
+
+admin_username: admin
+ssh_public_key: "{{ lookup('file', '/Users/you/.ssh/your_key.pub') }}"
