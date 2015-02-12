@@ -1,0 +1,6 @@
+# Download the confluence linux installer.
+- name: Download confluence linux installer
+  remote_user: "{{ admin_username }}"
+  sudo: yes
+  get_url: url=http://downloads.atlassian.com/software/confluence/downloads/atlassian-confluence-5.7-x64.bin
+           dest=/home/admin/confluence-x64.bin mode=0775

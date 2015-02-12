@@ -44,9 +44,16 @@ You'll need to change the connection parameters in the file `ansible_hosts`.
 
 Change the IP address, username, and private key location to the appropriate values.
 
-Then add the location of your public key in `group_vars/all`
+**Note**
+Add the location of your public key in `group_vars/all`
+You won't be locked out of the machine if you don't set this.
 
 # Run the installation
+
+Set the roles you wish to apply to the server in `main.yml`.
+
+Then run the playbook:
+
 ```bash
 ansible-playbook main.yml
 ```
