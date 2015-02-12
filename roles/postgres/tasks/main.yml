@@ -1,2 +1,14 @@
 ---
 
+- include: postgres_ubuntu.yml
+- include: postgres_redhat.yml
+
+- name: Create database user
+  sudo: yes
+  command: sudo -u postgres createuser --createdb --login --createrole --no-superuser --echo {{db_username}}
+  ignore_errors: yes
+
+- name: Create database
+  sudo: yes
+  command: sudo -u postgres psql -c "CREATE DATABASE {{db_name}} OWNER {{db_username}} ENCODING = 'unicode';"
+  ignore_errors: yes

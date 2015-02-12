@@ -1,6 +1,6 @@
-# Install and setup Postgres on an ubuntu linux Digital Ocean machine using ansible.
+# Install and setup Postgres on a Linux machine using ansible.
 
-This is intended for a fresh Ubuntu droplet.
+This is intended for a fresh Ubuntu or Redhat based droplet.
 
 ## Prerequisites
 
@@ -44,6 +44,7 @@ You'll need to change the connection parameters in the file `ansible_hosts`.
 
 Change the IP address, username, and private key location to the appropriate values.
 
+Then add the location of your public key in `group_vars/all`
 
 # Run the installation
 ```bash

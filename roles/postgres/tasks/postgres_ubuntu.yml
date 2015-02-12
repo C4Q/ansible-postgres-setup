@@ -1,0 +1,32 @@
+---
+
+- name: Update apt cache
+  sudo: yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  apt: update_cache=yes
+
+- name: Install Postgresql ubuntu
+  sudo: yes
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - postgresql-9.3
+    - postgresql-client-9.3
+    - postgresql-contrib-9.3
+    - libpq-dev
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  tags: postgres_install
+
+- name: Put pg_hba.conf file in place ubuntu
+  sudo: yes
+  copy: src=pg_hba.conf
+        dest=/etc/postgresql/9.3/main/pg_hba.conf
+        owner=postgres
+        group=postgres
+        mode=0640
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  tags: postgres_install
+
+- name: Reload postgres ubuntu
+  sudo: yes
+  service: name=postgresql state=reloaded
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

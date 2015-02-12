@@ -1,0 +1,40 @@
+---
+
+- name: Install Postgresql redhat
+  sudo: yes
+  yum: name={{ item }} state=latest
+  with_items:
+    - postgresql93-server
+    - postgresql93-libs
+    - postgresql93-devel
+    - postgresql93-contrib
+    - postgresql93
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'Amazon'
+  tags: postgres_install
+
+- name: Remove erroneous pg_log file
+  sudo: yes
+  command: rm /var/lib/pgsql93/data/pg_log
+           removes=/var/lib/pgsql93/data/pg_log
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'Amazon'
+
+- name: Run initdb redhat
+  sudo: yes
+  command: /etc/init.d/postgresql93 initdb
+           creates=/var/lib/pgsql93/data/postgresql.conf
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'Amazon'
+
+- name: Put pg_hba.conf file in place redhat
+  sudo: yes
+  copy: src=pg_hba.conf
+        dest=/var/lib/pgsql93/data/pg_hba.conf
+        owner=postgres
+        group=postgres
+        mode=0640
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'Amazon'
+  tags: postgres_install
+
+- name: Reload postgres redhat
+  sudo: yes
+  service: name=postgresql93 state=restarted
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'Amazon'
