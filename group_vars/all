@@ -2,3 +2,5 @@
 
 admin_username: admin
 ssh_public_key: "{{ lookup('file', '/Users/you/.ssh/your_key.pub') }}"
+# This is set to configure the DB to only allow connections from this address.
+web_server_ip: ip_here

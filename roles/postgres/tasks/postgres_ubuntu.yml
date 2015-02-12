@@ -26,7 +26,12 @@
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   tags: postgres_install
 
-- name: Reload postgres ubuntu
+- name: Listen on all addresses.
   sudo: yes
-  service: name=postgresql state=reloaded
+  command: sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc/postgresql/9.3/main/postgresql.conf
+
+- name: Restart postgres ubuntu
+  sudo: yes
+  service: name=postgresql state=restarted
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  tags: one
